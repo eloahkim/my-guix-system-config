@@ -54,6 +54,12 @@
   (kernel linux-lts)
   (firmware (cons* linux-firmware %base-firmware))
 
+    ;; Desativa o teclado interno com problema (atkbd/i8042)
+  (kernel-arguments
+   (append (list "modprobe.blacklist=atkbd" "i8042.nokbd")
+           %default-kernel-arguments))
+
+
   ;; Use the UEFI variant of GRUB with the EFI System
   ;; Partition mounted on /boot/efi.
   (bootloader (bootloader-configuration
