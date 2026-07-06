@@ -20,7 +20,7 @@
 
 (define luks-root
   (mapped-device
-    (source (uuid "2509d5eb-584f-49f1-9c63-cebe28e96cbf"))
+    (source (uuid "LUKS_UUID"))
     (target "cryptroot")
     (type luks-device-mapping)))
 
@@ -69,28 +69,28 @@
                          (device "/dev/mapper/cryptroot")
                          (mount-point "/")
                          (type "btrfs")
-			 (options "subvol=@,compress=zstd")
+			 (options "subvol=@,compress=zstd,ssd,space_cache=v2")
 			 (flags '(no-atime))
 			 (dependencies (list luks-root)))
 		       (file-system
 			 (device "/dev/mapper/cryptroot")
 			 (mount-point "/home")
 			 (type "btrfs")
-			 (options "subvol=@home,compress=zstd")
+			 (options "subvol=@home,compress=zstd,ssd,space_cache=v2")
 			 (flags '(no-atime))
 			 (dependencies (list luks-root)))
 		       (file-system
 			 (device "/dev/mapper/cryptroot")
 			 (mount-point "/var/log")
 			 (type "btrfs")
-			 (options "subvol=@log,compress=zstd")
+			 (options "subvol=@log,compress=zstd,ssd,space_cache=v2")
 			 (flags '(no-atime))
 			 (dependencies (list luks-root)))
 		       (file-system
 			 (device "/dev/mapper/cryptroot")
 			 (mount-point "/gnu/store")
 			 (type "btrfs")
-			 (options "subvol=@gnu-store,compress=zstd")
+			 (options "subvol=@gnu_store,compress=zstd,ssd,space_cache=v2")
 			 (flags '(no-atime))
 			 (dependencies (list luks-root)))
 
@@ -111,7 +111,6 @@
   ;; Add a bunch of window managers; we can choose one at
   ;; the log-in screen with F1.
   (packages (append (list
-                     ;; window managers
                      btrfs-progs cryptsetup
 		     )
                     %base-packages))
@@ -121,7 +120,7 @@
   (services (append (list
 		     (service zram-device-service-type
 			      (zram-device-configuration
-				(size "4G")
+				(size "6G")
 				(compression-algorithm 'zstd)
 				(priority 100)))
 		     (service openssh-service-type)
